@@ -88,18 +88,24 @@ var drawingApp = (function () {
 		}
 		context = canvas.getContext("2d"); 
 
-		right(colorBrown);
-		right(colorBlack);
-		right(colorYellow);
-		right(colorGreen);
-		right(colorBlack);
-		down(colorPurple);
-		right(colorGreen);
-		left(colorBlack);
-		right(colorYellow);
-		right(colorGreen);
-		right(colorYellow);
-		right(colorPurple);
+		var namespace = '/test';
+	    var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+	    socket.on('my response', function(msg) {
+	        $('#log').append('<br>' + $('<div/>').text('Received #' + msg.direction + ': ' + msg.color).html());
+	        var color = msg.color;
+	        if(!color){
+	        	color = 'black';
+	        }
+	        if(msg.direction === 'up'){
+	        	up(color);
+	        } else if(msg.direction === 'down') {
+	        	down(color);
+	        } else if(msg.direction === 'left') {
+	        	left(color);
+	        } else if(msg.direction ==='right') {
+	        	right(color);
+	        }
+	    });
 	};
 	return {
 		init: init
