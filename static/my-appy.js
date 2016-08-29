@@ -14,7 +14,7 @@ var drawingApp = (function () {
 		colorBlack = "#000000",
 		x = canvasWidth/2,
 		y = canvasHeight/2,
-		len = 220,
+		len = 50,
 	// clears the canvas.
 	clearCanvas = function () {
 		context.clearRect(0, 0, canvasWidth, canvasHeight);
