@@ -14,13 +14,15 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 client = None
-twilio_account_sid = "ACacb84763b4ee98385b7e3bebd45422b3" #app.flask_app.config['TWILIO_ACCOUNT_SID']
-twilio_auth_token = "36d1a0bc43cf4e1ddfae6d9ddf3add90" #app.flask_app.config['TWILIO_AUTH_TOKEN']
-twilio_number = "+12697433810 "#app.flask_app.config['TWILIO_NUMBER']
+#twilio_account_sid = app.flask_app.config['TWILIO_ACCOUNT_SID']
+#twilio_auth_token = app.flask_app.config['TWILIO_AUTH_TOKEN']
+#twilio_number = app.flask_app.config['TWILIO_NUMBER']
 
-def draw_something(clientText):
-    print(clientText)
-    socketio.emit('my response', {'direction': clientText, 'color': 'black'}, namespace='/test')
+def draw_something(direction, color):
+    print(direction + " " + color)
+    if not color:
+        color = 'black'
+    socketio.emit('my response', {'direction': direction, 'color': color}, namespace='/test')
 
 # def background_thread():
 #     """Example of how to send server generated events to clients."""
@@ -42,7 +44,7 @@ def index():
 def test_connect():
     global thread
     if thread is None:
-        thread = socketio.start_background_task(target=draw_something("open"))
+        thread = socketio.start_background_task(target=draw_something("open", "black"))
     global client
     if client is None:
         client = TwilioRestClient(twilio_account_sid,twilio_auth_token)
@@ -50,9 +52,32 @@ def test_connect():
 
 @app.route('/message', methods=['GET', 'POST'])
 def stanford_copy():
-    clientText = request.args.get('Body').lower()
-    draw_something(clientText)
+    clientText = request.args.get('Body')
+    if validateMessage(clientText):
+        direction = getDirection(clientText)
+        color = getColor(clientText)
+        draw_something(direction, color)
     return ('', 204)
+
+def getDirection(text):
+    list = text.split(" ")
+    direction = list[0].lower()
+    return direction
+
+def getColor(text):
+    list = text.split(" ")
+    if len(list) == 2:
+        return list[1].lower()
+    return "black"
+
+def validateMessage(text):
+    if text is None: return False
+    list = text.split(" ")
+    if len(list) > 2: return False
+    if len(list) <= 0: return False
+    direction = list[0].lower()
+    if direction not in ["up", "down", "left", "right"]: return False
+    return True 
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

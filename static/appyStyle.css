@@ -1,7 +1,28 @@
 body {
-    background-color: white;
+	font-family: Courier;
+    background-color: #E12227;
+}
+
+p {
+    color: white;
+    margin-top: 0;
+}
+
+p.fonter {
+	color:black;
+}
+
+h2 {
+    color: white;
+    margin-bottom: 0;
+}
+
+h1 {
+    color: white;
+    margin-top: 0;
 }
 
 canvas {
 	border: 1px solid #000000;
+	background-color: white;
 }
