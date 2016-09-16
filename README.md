@@ -3,4 +3,5 @@ Final Demo code, I have removed access and secret keys, add it back to make it w
 
 #How to run
 `$export FLASK_APP=app.py`
+
 `flask run`
